@@ -185,6 +185,7 @@ function quiz() {
 }
 
 function ehrung() {
+  background()
   ctx.drawImage(images[9 + Math.floor(punkte / 2)], wid /2 - size * 7, hei / 2 - size * 7, size * 14, size * 14)
   write(`${punkte}/10 Punkte`, wid * .5, hei / 2 + size * 8, size * 1, 'gold')
 
@@ -251,8 +252,8 @@ class Frage {
             ['Frankreich', 'Deutschland', 'Italien', 'Niederlande'],
             ['14 Vereine', '16 Vereine', '18 Vereine', '20 Vereine'],
             ['Ja, manche sogar sehr gut!', 'Nein, das ist verboten!', 'Nein, sie sind zu klein!', 'Nein, es ist zu gefährlich!'],
-            ['Lothar Matthäus', 'Uew Seeler', 'Franz Beckenbauer', 'Jürgen Klopp'],
-            ['  0 Bundesligaeinsätze', ' 48 Bundsligaeinsätze', '163 Bundesligaeinsätze', '345 Bundesligaeinsätze'],
+            ['Lothar Matthäus', 'Uwe Seeler', 'Franz Beckenbauer', 'Jürgen Klopp'],
+            ['0 Bundesligaeinsätze', '48 Bundsligaeinsätze', '163 Bundesligaeinsätze', '345 Bundesligaeinsätze'],
             ['Bayern', 'Hessen', 'Rheinlanz-Pfalz', 'Saarland'],
             ['Es wird weiter gespielt', 'Es wird abgepfiffen', 'Das Spiel wird beendet', 'Es gibt die Rote Karte']][i]
   }
