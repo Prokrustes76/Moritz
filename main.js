@@ -113,14 +113,14 @@ function leben() {
 }
 
 function showStars(time = audios[0].currentTime / 29.5) {
-  if (time > .1) {
+  if (time > .15) {
     ctx.drawImage(images[1], wid * .3, hei * .6, wid * .35, hei * .4)
     ctx.drawImage(images[7], wid * .5, hei * .5, wid / 5.5, hei / 4.5)
     write('Super',   wid * .6, hei * .583, size * .9, 'black')
     write('Moritz!', wid * .6, hei * .63, size * .9, 'black')
   }
 
-  if (time > .27) {
+  if (time > .32) {
     ctx.drawImage(images[2], 0,         hei * .6, wid * .25, hei * .4)
     ctx.drawImage(images[7], wid * .15, hei * .44, wid / 5.5, hei / 4.5)
     write('Happy', wid * .247 , hei * .525,  size * .8, 'black')
