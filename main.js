@@ -1,7 +1,6 @@
 let canvas, 
     mouseX  = 0,
     mouseY  = 0,
-    key     = false, 
     clicked = false,
     running = true,
     ctx, 
@@ -18,7 +17,6 @@ let canvas,
 
 document.addEventListener('mousemove', mouseMove)
 document.addEventListener('mousedown', mouseDown)
-document.addEventListener('keyup',     keyUp)
 window.  addEventListener('resize',    getSize)
 
 function mouseMove(e) {
@@ -28,10 +26,6 @@ function mouseMove(e) {
 
 function mouseDown() {
   clicked = true
-}
-
-function keyUp(e) {
-  key = ['a', 'b', 'c', 'd'].includes(e.key) ? e.key : false
 }
 
 function getSize() {
@@ -47,8 +41,8 @@ window.onload = function() {
   getSize()
 
   let img = ['start', 'klopp', 'lewa', 'ronaldo', 'messi', 'kimmich', 'mainz', 'sprechblase', 'quiz',
-             'typ0', 'typ1', 'typ2', 'typ3', 'typ4', 'typ5']
-  let aud = ['leben', 'tor', 'ehrung0', 'ehrung1', 'ehrung2', 'ehrung3', 'ende', 'quiz']
+             'typ0', 'typ1', 'typ2', 'typ3', 'typ4', 'typ5', 'trikot']
+  let aud = ['leben', 'tor', 'ehrung0', 'ehrung1', 'ehrung2', 'ehrung3', 'ende', 'quiz', 'yell', 'boo']
 
   for (let i = 0; i < Math.max(img.length, aud.length); i++) {
     images[i]     = new Image()
@@ -66,7 +60,6 @@ function loop() {
   background()
   phaseContent()
   clicked = false
-  key     = false
 
   if (running)
     requestAnimationFrame(loop)
@@ -112,9 +105,9 @@ function leben() {
     audios[0].pause()
 
   if (audios[0].currentTime > .3) {
-    write('Alles Gute',      wid / 2, hei * .1, size * 2, 'orange')
-    write('zum Geburtstag,', wid / 2, hei * .2, size * 2, 'orange')
-    write('lieber Moritz!',  wid / 2, hei * .3, size * 2, 'orange')
+    ctx.drawImage(images[15], wid /2 - hei * .25, .03 * hei, hei * .5, hei * .5)
+    write('von', wid / 2, hei * .44, hei * .03, 'red')
+    write('Onkel Patrick',  wid / 2, hei * .48, hei * .03, 'red')
   } 
   showStars()
 }
@@ -153,8 +146,8 @@ function showStars(time = audios[0].currentTime / 29.5) {
   }
 
   if (time > .9) {
-    let val = Math.max(0, (time - .9)) * 2700 - 300
-    ctx.drawImage(images[8], val + size, size * -2, size * 10, size * 12)
+    let val =  wid * 3.5 * (time - .9) - wid * .8 + .5 * wid
+    ctx.drawImage(images[8], val, 0, size * 10, size * 10)
     if (clicked && mouseX > wid * .05 && mouseX < wid * .25 && mouseY > hei * .05 && mouseY < hei * .25)
       phase = 3
   }
@@ -167,20 +160,36 @@ function quiz() {
   for (let i = 0; i < 10; i++)
     fragen.push(new Frage(i))
 
-  rect(.25 * wid, .2 * hei, .5 * wid, .6 * hei, 'rgba(0, 0, 0, .5)', 'silver', size / 3)
-  write(fragen[aktuell].frage, wid / 2, hei * .3, size * .8, 'gold')
-  for (let i = 0; i < 4; i++)
-    write(`${['A', 'B', 'C', 'D'][i]}) ${fragen[aktuell].antworten[i]}`, wid / 2, hei * .45 + i * size * 1.2 , size, 'goldenrod')
-  write('(Drücke eine Taste!)', wid / 2, hei * .7, size * .7, 'silver')
+  rect(.25 * wid, .2 * hei, .5 * wid, .6 * hei, undefined, '#666', size / 6)
+  write(fragen[aktuell].frage, wid / 2, hei * .28, size * .8, 'goldenrod')
+  for (let i = 0; i < 4; i++) {
+    let x = .3 * wid, 
+        y = hei * (.35 + i / 9), 
+        w = wid * .4, 
+        h = hei * .08
+    rect(x, y, w, h, 'rgba(0,0,0,.5)', '#666', 3)
+    write(fragen[aktuell].antworten[i], wid / 2, y + h / 2 + size / 3, size, 'gold')
 
-  if (key) {
-    if (key == fragen[aktuell].richtige) 
-      punkte++
-    aktuell++
-    if (aktuell >= fragen.length) {
-      audios[7].pause()
-      phase = 4
-    }
+    if (clicked && mouseX > x && mouseX < x + w && mouseY > y && mouseY < y + h)
+      {
+        if (i == fragen[aktuell].richtige) {
+          punkte++
+          audios[8].currentTime = 0
+          audios[8].play()
+        }
+        else {
+          audios[9].currentTime = 0
+          audios[9].play()
+        }
+
+        aktuell++
+        if (aktuell >= fragen.length) {
+          for (let i = 7; i < 10; i++)
+          audios[i].pause()
+          phase = 4
+          break
+        }
+      }
   }
 }
 
@@ -229,7 +238,7 @@ class Frage {
     this.id         = i
     this.frage      = this.getFrage(i)
     this.antworten  = this.getAntworten(i)
-    this.richtige   = ["b", "c", "a", "d", "c", "a", "c", "a", "d", "a"][i]
+    this.richtige   = [1, 2, 0, 3, 2, 0, 2, 0, 3, 0][i]
   }
 
   getFrage(i) {
